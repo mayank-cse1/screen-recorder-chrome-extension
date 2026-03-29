@@ -29,12 +29,16 @@ function ensureOffscreen() {
 
 // Listen for messages
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message.type === 'create-offscreen') {
-    console.log('Background: Received create-offscreen');
+  if (message.type === 'start-recording') {
+    console.log('Background: Received start-recording');
     ensureOffscreen().then(() => {
-      console.log('Background: Sending offscreen-ready');
-      chrome.runtime.sendMessage({ type: 'offscreen-ready' });
+      console.log('Background: Sending start-recording to offscreen');
+      chrome.runtime.sendMessage({ type: 'start-recording' });
     });
+  }
+  if (message.type === 'stop-recording') {
+    console.log('Background: Received stop-recording');
+    chrome.runtime.sendMessage({ type: 'stop-recording' });
   }
   if (message.type === 'log') {
     console.log('Background: Log from offscreen:', message.message);
