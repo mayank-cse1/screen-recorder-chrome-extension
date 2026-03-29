@@ -1,22 +1,18 @@
 console.log('Offscreen: Script loaded');
 chrome.runtime.sendMessage({ type: 'log', message: 'Offscreen script loaded' });
 
-// Listen for ping
+// Listen for messages
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.type === 'ping') {
     console.log('Offscreen: Received ping, sending pong');
     chrome.runtime.sendMessage({ type: 'pong' });
   }
-});
-
-let canvas, ctx, screenVideo, camVideo, recorder, screenStream, camMicStream;
-
-chrome.runtime.onConnect.addListener((port) => {
-  console.log('Offscreen: Connection received, name:', port.name);
-  if (port.name === 'offscreen-port') {
-    console.log('Offscreen: Offscreen port connected');
-    port.onMessage.addListener(async (message) => {
-      console.log('Offscreen: Received message:', message.type);
+  if (message.type === 'offscreen-port') {
+    console.log('Offscreen: Received port');
+    const port = message.port;
+    port.onmessage = async (event) => {
+      const message = event.data;
+      console.log('Offscreen: Received message on port:', message.type);
       if (message.type === 'start-recording') {
         console.log('Offscreen: Starting recording, screen tracks:', message.screenTracks.length, 'cam tracks:', message.camTracks.length);
         screenStream = new MediaStream(message.screenTracks);
@@ -105,6 +101,8 @@ chrome.runtime.onConnect.addListener((port) => {
         console.log('Offscreen: Sending recording-stopped');
         port.postMessage({ type: 'recording-stopped' });
       }
-    });
+    };
   }
 });
+
+let canvas, ctx, screenVideo, camVideo, recorder, screenStream, camMicStream;

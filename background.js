@@ -27,32 +27,19 @@ function ensureOffscreen() {
   });
 }
 
-chrome.runtime.onConnect.addListener((port) => {
-  console.log('Background: Connection received, name:', port.name);
-  if (port.name === 'recording-port') {
+// Listen for messages
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.type === 'create-offscreen') {
+    console.log('Background: Received create-offscreen');
     ensureOffscreen().then(() => {
-      console.log('Background: Connecting to offscreen');
-      offscreenPort = chrome.runtime.connect({ name: 'offscreen-port' });
-      console.log('Background: Offscreen port created, setting up forwarding');
-      // Forward messages
-      port.onMessage.addListener((message) => {
-        console.log('Background: Forwarding to offscreen:', message.type);
-        offscreenPort.postMessage(message);
-      });
-      offscreenPort.onMessage.addListener((message) => {
-        console.log('Background: Forwarding to popup:', message.type);
-        port.postMessage(message);
-      });
+      console.log('Background: Sending offscreen-ready');
+      chrome.runtime.sendMessage({ type: 'offscreen-ready' });
     });
   }
-});
-
-// Listen for log messages from offscreen
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.type === 'log') {
     console.log('Background: Log from offscreen:', message.message);
   }
   if (message.type === 'pong') {
-    // handled above
+    // handled in ensureOffscreen
   }
 });
