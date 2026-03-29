@@ -2,7 +2,9 @@ let canvas, ctx, screenVideo, camVideo, recorder, screenStream, camMicStream;
 
 chrome.runtime.onConnect.addListener((port) => {
   if (port.name === 'offscreen-port') {
+    console.log('Offscreen port connected');
     port.onMessage.addListener(async (message) => {
+      console.log('Offscreen received message:', message.type);
       if (message.type === 'start-recording') {
         screenStream = message.streams[0];
         camMicStream = message.streams[1];
