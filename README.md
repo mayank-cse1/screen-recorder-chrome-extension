@@ -42,7 +42,7 @@ This Chrome extension allows you to record your screen, camera, and microphone i
 - `offscreen`: Use offscreen documents for recording
 - `downloads`: Download recorded video
 
-Camera and microphone permissions are requested when you start recording.
+Camera and microphone permissions are requested by the browser when you start recording.
 
 ## Notes
 

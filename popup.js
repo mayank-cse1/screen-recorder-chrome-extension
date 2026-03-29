@@ -5,16 +5,6 @@ document.getElementById('stop').addEventListener('click', stopRecording);
 
 async function startRecording() {
   try {
-    // Request camera and microphone permissions if not granted
-    const hasPermissions = await chrome.permissions.contains({ permissions: ['camera', 'microphone'] });
-    if (!hasPermissions) {
-      const granted = await chrome.permissions.request({ permissions: ['camera', 'microphone'] });
-      if (!granted) {
-        alert('Camera and microphone permissions are required for recording.');
-        return;
-      }
-    }
-
     // Request screen capture
     const screenStream = await navigator.mediaDevices.getDisplayMedia({
       video: { width: { ideal: 3840 }, height: { ideal: 2160 } },
@@ -40,7 +30,11 @@ async function startRecording() {
       }
     });
   } catch (e) {
-    alert('Error starting recording: ' + e.message);
+    if (e.name === 'NotAllowedError') {
+      alert('Recording requires camera, microphone, and screen permissions. Please allow access when prompted.');
+    } else {
+      alert('Error starting recording: ' + e.message);
+    }
   }
 }
 
