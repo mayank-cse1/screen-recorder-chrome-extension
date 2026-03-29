@@ -18,7 +18,7 @@ async function startRecording() {
     });
 
     port = chrome.runtime.connect({ name: 'recording-port' });
-    port.postMessage({ type: 'start-recording', streams: [screenStream, camMicStream] }, [screenStream, camMicStream]);
+    port.postMessage({ type: 'start-recording', screenTracks: screenStream.getTracks(), camTracks: camMicStream.getTracks() }, screenStream.getTracks().concat(camMicStream.getTracks()));
 
     port.onMessage.addListener((message) => {
       if (message.type === 'recording-started') {

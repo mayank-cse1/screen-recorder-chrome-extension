@@ -6,8 +6,8 @@ chrome.runtime.onConnect.addListener((port) => {
     port.onMessage.addListener(async (message) => {
       console.log('Offscreen received message:', message.type);
       if (message.type === 'start-recording') {
-        screenStream = message.streams[0];
-        camMicStream = message.streams[1];
+        screenStream = new MediaStream(message.screenTracks);
+        camMicStream = new MediaStream(message.camTracks);
 
         // Get screen dimensions
         const screenTrack = screenStream.getVideoTracks()[0];
