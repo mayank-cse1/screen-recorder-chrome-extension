@@ -1,3 +1,14 @@
+console.log('Offscreen: Script loaded');
+chrome.runtime.sendMessage({ type: 'log', message: 'Offscreen script loaded' });
+
+// Listen for ping
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.type === 'ping') {
+    console.log('Offscreen: Received ping, sending pong');
+    chrome.runtime.sendMessage({ type: 'pong' });
+  }
+});
+
 let canvas, ctx, screenVideo, camVideo, recorder, screenStream, camMicStream;
 
 chrome.runtime.onConnect.addListener((port) => {
