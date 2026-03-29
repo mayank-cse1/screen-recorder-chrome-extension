@@ -37,12 +37,12 @@ This Chrome extension allows you to record your screen, camera, and microphone i
 
 ## Permissions
 
-- `activeTab`: Access current tab
+- `activeTab`: Access current tab for screen capture
 - `storage`: Store settings
-- `camera`: Access camera
-- `microphone`: Access microphone
 - `offscreen`: Use offscreen documents for recording
 - `downloads`: Download recorded video
+
+Camera and microphone permissions are requested when you start recording.
 
 ## Notes
 
